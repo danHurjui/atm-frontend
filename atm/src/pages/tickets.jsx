@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container'
 import axios from "axios"
 import Col from "react-bootstrap/Col"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Table from 'react-bootstrap/Table'
 //import ReactSession from 'react-client-session'
 //ReactSession.setStoreType("localStorage");
 
@@ -21,7 +22,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
   padding: grid * 2,
-  margin: `0 ${grid}px 0 0`,
+  // margin: `0 ${grid}px 0 0`,
 
   // change background colour if dragging
   background: isDragging ? "lightgreen" : "white",
@@ -31,7 +32,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 });
 
 const getListStyle = (isDraggingOver, itemsLength) => ({
-  background: isDraggingOver ? "lightblue" : "white",
   display: "flex",
   padding: grid,
  // width: itemsLength * 68.44 + 16
@@ -81,7 +81,7 @@ class DragTickets extends React.Component {
   render() {
     return (
       <Container>
-      <h3> List Of Tickets for Today:</h3>
+      
       <div style={{overflow: "scroll"}}>
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable" direction="horizontal">
@@ -189,7 +189,25 @@ class Tickets extends React.Component {
     return (
       <>
       <Container>
-        <DragTickets items={this.state.dragItems}/>
+        <Table>
+        <thead> 
+          <tr>
+         <h4> List Of Tasks for Today:
+
+         </h4>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+            <DragTickets items={this.state.dragItems}/>
+            </td>
+          
+          </tr>
+       
+        </tbody>
+        </Table>
+       
       </Container>
         {/* <Container>
           <h1>This is my list of tickets for next week: </h1>
