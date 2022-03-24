@@ -10,6 +10,7 @@ import About from './pages/about';
 import Layout from './pages/Laoyout';
 import Contact from './pages/contact';
 import Container from 'react-bootstrap/Container'
+import Statistics from './pages/Statistics';
 
 export default function App() {
       return (
@@ -20,6 +21,7 @@ export default function App() {
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
+              <Route path="statistics" element={<Statistics />} />
               
             </Route>
           </Routes>

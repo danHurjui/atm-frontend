@@ -1,10 +1,11 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
 
 const ContactUs = () => {
 	return (
-		<div>
-			<h1>Mail us on activity.trackingManagement@atm.com</h1>
-		</div>
+		<Container>
+			<h2>Mail us on activity.trackingManagement@atm.com</h2>
+		</Container>
 	);
 };
 
