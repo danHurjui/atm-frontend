@@ -4,12 +4,141 @@ import React from 'react'
 import Container from 'react-bootstrap/Container'
 import axios from "axios"
 import Col from "react-bootstrap/Col"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+//import ReactSession from 'react-client-session'
+//ReactSession.setStoreType("localStorage");
+
+// fake data generator
+const getItems = count =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `item-${k}`,
+    content: `item ${k}`
+  }));
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: "none",
+  padding: grid * 2,
+  margin: `0 ${grid}px 0 0`,
+
+  // change background colour if dragging
+  background: isDragging ? "lightgreen" : "white",
+
+  // styles we need to apply on draggables
+  ...draggableStyle
+});
+
+const getListStyle = (isDraggingOver, itemsLength) => ({
+  background: isDraggingOver ? "lightblue" : "white",
+  display: "flex",
+  padding: grid,
+ // width: itemsLength * 68.44 + 16
+});
+
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+
+class DragTickets extends React.Component {
+  constructor(props, items) {
+    super(props);
+    this.state = {
+      items : props.items,
+    };
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      this.state.items,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      items
+    });
+    localStorage.setItem('Items', items);
+    let items_temp = localStorage.getItem('Items');
+  }
+
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
+  render() {
+    return (
+      <Container>
+      <h3> List Of Tickets for Today:</h3>
+      <div style={{overflow: "scroll"}}>
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Droppable droppableId="droppable" direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver, this.state.items.length)}
+              {...provided.droppableProps}
+            >
+              {this.state.items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                    <Card >
+                    <Card.Header>  {item.content.Id}</Card.Header>
+                    <Card.Body>
+                      <Card.Title>
+                        {item.content.Title}
+                      </Card.Title>
+                      <Card.Text>
+                        {item.content.Description}
+                      </Card.Text>
+                      <Card.Text>
+                        Priority:{item.content.Priority}
+                      </Card.Text>
+                      <Card.Link href={item.content.Link}> Link to Jira</Card.Link>
+                    </Card.Body>
+                    </Card>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      </div>
+      </Container>
+    );
+  }
+}
 
 class Tickets extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataProcess: null
+      dataProcess: null,
+      dragItems: null
     };
 
   }
@@ -29,8 +158,17 @@ class Tickets extends React.Component {
       .then(data => {
        
         console.log(data['data'])
+        let temp = []
+        for (let index = 0; index < data['data'].length; index++)
+        {
+          let temporary = {}
+          temporary.id = `item-${index}`;
+          temporary.content = data['data'][index];
+          temp.push(temporary);
+        }
         this.setState({
           dataProcess: data['data'],
+          dragItems:temp
      
         });
 
@@ -42,9 +180,18 @@ class Tickets extends React.Component {
   render() {
     if (!this.state.dataProcess)
       return null;
+    else
+    {
+      let items_toRender;
+      items_toRender = localStorage.getItem('Items');
+      if (!items_toRender)
+        items_toRender = this.state.dragItems;
     return (
       <>
-        <Container>
+      <Container>
+        <DragTickets items={this.state.dragItems}/>
+      </Container>
+        {/* <Container>
           <h1>This is my list of tickets for next week: </h1>
           <CardGroup>
               {this.state.dataProcess.map((dataP, k) => (
@@ -66,10 +213,11 @@ class Tickets extends React.Component {
                   </Card>
                   </Col>      
               ))}
-          </CardGroup>
-        </Container>
+          </CardGroup>}
+              </Container> */}
       </>
     )
+    }
   }
 }
 

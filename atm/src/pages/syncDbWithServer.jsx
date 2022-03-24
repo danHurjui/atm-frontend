@@ -70,7 +70,7 @@ class SyncDbWithServer extends React.Component {
       .then(data => {
 
         console.log(this.state.show)
-        if (data['data'][0]['status'] == 'ok') {
+        if (data['data'][0]['status'] === 'ok') {
           this.setState({
             show: true,
             title: 'Sync DB on Server',

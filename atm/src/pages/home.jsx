@@ -22,7 +22,7 @@ function Home() {
         <br></br>
         <div>
        
-            <NextMeetings />
+            {/* <NextMeetings /> */}
         
         </div>
 
