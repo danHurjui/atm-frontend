@@ -1,145 +1,47 @@
-import Card from 'react-bootstrap/Card'
-import CardGroup from 'react-bootstrap/CardGroup'
+// import Card from 'react-bootstrap/Card'
+// import CardGroup from 'react-bootstrap/CardGroup'
 import React from 'react'
-import Container from 'react-bootstrap/Container'
+// import Container from 'react-bootstrap/Container'
 import axios from "axios"
 import Col from "react-bootstrap/Col"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Table from 'react-bootstrap/Table'
-//import ReactSession from 'react-client-session'
-//ReactSession.setStoreType("localStorage");
-
-// fake data generator
-const getItems = count =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k}`,
-    content: `item ${k}`
-  }));
-
-const grid = 8;
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: "none",
-  padding: grid * 2,
-  // margin: `0 ${grid}px 0 0`,
-
-  // change background colour if dragging
-  background: isDragging ? "lightgreen" : "white",
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
-
-const getListStyle = (isDraggingOver, itemsLength) => ({
-  display: "flex",
-  padding: grid,
- // width: itemsLength * 68.44 + 16
-});
+import Card from '@mui/material/Card';
 
 
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
+import Container from "react-bootstrap/esm/Container";
+import CardHeader from '@mui/material/CardHeader';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import { red } from '@mui/material/colors';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import { Button, CardActions } from '@mui/material';
+import styled from "styled-components";
+import DraggableElement from "./DraggableElement";
+
+
+const removeFromList = (list, index) => {
   const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
+  const [removed] = result.splice(index, 1);
+  return [removed, result];
 };
 
-
-class DragTickets extends React.Component {
-  constructor(props, items) {
-    super(props);
-    this.state = {
-      items : props.items,
-    };
-    this.onDragEnd = this.onDragEnd.bind(this);
-  }
-
-  onDragEnd(result) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const items = reorder(
-      this.state.items,
-      result.source.index,
-      result.destination.index
-    );
-
-    this.setState({
-      items
-    });
-    localStorage.setItem('Items', items);
-    let items_temp = localStorage.getItem('Items');
-  }
-
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
-  render() {
-    return (
-      <Container>
-      
-      <div style={{overflow: "scroll"}}>
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable" direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver, this.state.items.length)}
-              {...provided.droppableProps}
-            >
-              {this.state.items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                    <Card >
-                    <Card.Header>  {item.content.Id}</Card.Header>
-                    <Card.Body>
-                      <Card.Title>
-                        {item.content.Title}
-                      </Card.Title>
-                      <Card.Text>
-                        {item.content.Description}
-                      </Card.Text>
-                      <Card.Text>
-                        Priority:{item.content.Priority}
-                      </Card.Text>
-                      <Card.Link href={item.content.Link}> Link to Jira</Card.Link>
-                    </Card.Body>
-                    </Card>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      </div>
-      </Container>
-    );
-  }
-}
+const addToList = (list, index, element) => {
+  const result = Array.from(list);
+  result.splice(index, 0, element);
+  return result;
+};
 
 class Tickets extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataProcess: null,
-      dragItems: null
+      lists1: null,
+      elem: null
     };
+    this.onDragEnd = this.onDragEnd.bind(this);
 
   }
   url = "http://127.0.0.1:8000/getTickets/?emailAddress=danhurjui24@gmail.com";
@@ -156,86 +58,99 @@ class Tickets extends React.Component {
         }
       })
       .then(data => {
-       
+
         console.log(data['data'])
-        let temp = []
-        for (let index = 0; index < data['data'].length; index++)
-        {
-          let temporary = {}
+        let temp = [];
+        for (let index = 0; index < data['data'].length; index++) {
+          let temporary = {};
           temporary.id = `item-${index}`;
           temporary.content = data['data'][index];
+          temporary.prefix = "Today"
           temp.push(temporary);
         }
-        this.setState({
-          dataProcess: data['data'],
-          dragItems:temp
+
+      
+        let day = "Today";
+        let ele ={};
+        ele['Today'] = temp;
+        let lists = [];
+        lists.push(day);
+
+        let temp1 = [];
+        for (let index = data['data'].length; index < 2*data['data'].length; index++) {
+          let temporary = {};
+          temporary.id = `item-${index}`;
+          temporary.content = data['data'][index-data['data'].length];
+          temporary.prefix = "Tomorrow"
+          temp1.push(temporary);
+        }
+
+        let day1 = "Tomorrow";
+        lists.push(day1);
+
+        ele['Tomorrow'] = temp1;
      
+       // let tempLists = generateLists();
+
+       // console.log(tempLists);
+        console.log(ele);
+
+        this.setState({
+          lists1: lists,
+          elem: ele
+
         });
 
       })
       .catch((error) => console.error("FETCH ERROR: ", error))
   };
 
+  onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    const listCopy = { ...this.state.elem };
+
+    const sourceList = listCopy[result.source.droppableId];
+    const [removedElement, newSourceList] = removeFromList(
+      sourceList,
+      result.source.index
+    );
+    listCopy[result.source.droppableId] = newSourceList;
+    const destinationList = listCopy[result.destination.droppableId];
+    listCopy[result.destination.droppableId] = addToList(
+      destinationList,
+      result.destination.index,
+      removedElement
+    );
+
+    this.setState({
+      elem: listCopy
+    });
+  }
 
   render() {
-    if (!this.state.dataProcess)
+    if (!this.state.elem)
       return null;
-    else
-    {
-      let items_toRender;
-      items_toRender = localStorage.getItem('Items');
-      if (!items_toRender)
-        items_toRender = this.state.dragItems;
+ 
     return (
-      <>
-      <Container>
-        <Table>
-        <thead> 
-          <tr>
-         <h4> List Of Tasks for Today:
+        <>
+      
+            <DragDropContext onDragEnd={this.onDragEnd}>
+                {this.state.lists1.map((listKey) => (
+                  <DraggableElement
+                    elements={this.state.elem[listKey]}
+                    key={listKey}
+                    prefix={listKey}
+                  />
+                ))}
+            </DragDropContext>
+    
 
-         </h4>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-            <DragTickets items={this.state.dragItems}/>
-            </td>
-          
-          </tr>
-       
-        </tbody>
-        </Table>
-       
-      </Container>
-        {/* <Container>
-          <h1>This is my list of tickets for next week: </h1>
-          <CardGroup>
-              {this.state.dataProcess.map((dataP, k) => (
-                  <Col key={k} xs={12} md={4} lg={3}>
-                  <Card border="primary" className="mb-2">
-                  <Card.Header>{dataP.Id}</Card.Header>
-                  <Card.Body>
-                    <Card.Title>
-                      {dataP.Title}
-                    </Card.Title>
-                    <Card.Text>
-                      {dataP.Description}
-                    </Card.Text>
-                    <Card.Text>
-                      Priority:{dataP.Priority}
-                    </Card.Text>
-                    <Card.Link href={dataP.Link}> Link to Jira</Card.Link>
-                  </Card.Body>
-                  </Card>
-                  </Col>      
-              ))}
-          </CardGroup>}
-              </Container> */}
-      </>
-    )
-    }
+         
+        </>
+      )
+    
   }
 }
 
