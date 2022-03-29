@@ -93,7 +93,7 @@ const ListItem = ({ item, index }) => {
                         >
                             <Card sx={{ maxWidth: 345 }}>
                                 <CardHeader
-                                    avatar={<Avatar sx={{ bgcolor: green[500] }}>M</Avatar>}
+                                    avatar={<Avatar sx={{ bgcolor: red[500] }}>M</Avatar>}
                                     titleTypographyProps={{
                                         fontSize: 15,
                                     }}
