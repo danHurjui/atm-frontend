@@ -20,62 +20,110 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
     padding: grid,
     margin: `0 ${grid}px 1 1`,
-  
+
     // change background colour if dragging
     background: isDragging ? "lightgreen" : "lightblue",
-  
+
     // styles we need to apply on draggables
     ...draggableStyle
-  });
+});
 
 const ListItem = ({ item, index }) => {
-    return (
-        <Container>
-        <Draggable key={item.id} draggableId={item.id} index={index}>
-            {(provided, snapshot) => (
-              <div
-               ref={provided.innerRef}
-                style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style
-              )}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-            >
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardHeader
-                            avatar={<Avatar sx={{ bgcolor: red[500] }}>J</Avatar>}
-                            titleTypographyProps={{
-                                fontSize: 15,
-                            }}
-                            subheaderTypographyProps={{
-                                fontSize: 10,
-                            }}
-                            action={
-                                <IconButton aria-label="settings">
-                                    <MoreVertIcon />
-                                </IconButton>
-                            }
-                            title={item.content.Id}
-                            subheader={item.content.Title}
-                        />
-                        <CardContent>
-                            <Typography paragraph>
+    if (item.type === "Jira") {
+        return (
+            <Container>
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                            )}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                            <Card sx={{ maxWidth: 345 }}>
+                                <CardHeader
+                                    avatar={<Avatar sx={{ bgcolor: red[500] }}>J</Avatar>}
+                                    titleTypographyProps={{
+                                        fontSize: 15,
+                                    }}
+                                    subheaderTypographyProps={{
+                                        fontSize: 10,
+                                    }}
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    }
+                                    title={item.content.Id}
+                                    subheader={item.content.TaskType}
+                                />
+                                <CardContent>
+                                    <Typography paragraph>
 
-                                {item.id}
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small" href={item.content.Link}> Jira</Button>
-                        </CardActions>
-                    </Card>
+                                        {item.content.Description}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button size="small" href={item.content.Link}> Jira</Button>
+                                </CardActions>
+                            </Card>
 
-                </div>
-            )}
-        </Draggable>
-        </Container>
+                        </div>
+                    )}
+                </Draggable>
+            </Container>
+        );
+    }
+    else {
+        return (
+            <Container>
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                            )}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                            <Card sx={{ maxWidth: 345 }}>
+                                <CardHeader
+                                    avatar={<Avatar sx={{ bgcolor: green[500] }}>M</Avatar>}
+                                    titleTypographyProps={{
+                                        fontSize: 15,
+                                    }}
+                                    subheaderTypographyProps={{
+                                        fontSize: 10,
+                                    }}
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    }
+                                    title={item.content.Type}
+                                    subheader={item.content.StartDate}
+                                />
+                                <CardContent>
+                                    <Typography paragraph>
+                                        {item.content.Description}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button size="small" href={item.content.Link}> Calendar</Button>
+                                </CardActions>
+                            </Card>
 
-    );
+                        </div>
+                    )}
+                </Draggable>
+            </Container>
+        );
+    }
 };
 
 export default ListItem;

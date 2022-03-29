@@ -59,36 +59,33 @@ class Tickets extends React.Component {
       })
       .then(data => {
 
+        let keys = Object.keys(data['data']);
+        let keyDay = [];
+        let daysList = [];
+        for (let i = 0; i < keys.length; i++)
+        {
+            keyDay = Object.keys(data['data'][keys[i]]);
+            
+            daysList.push(keyDay[0])
+            
+        }
+        
         console.log(data['data'])
-        let temp = [];
-        for (let index = 0; index < data['data'].length; index++) {
-          let temporary = {};
-          temporary.id = `item-${index}`;
-          temporary.content = data['data'][index];
-          temporary.prefix = "Today"
-          temp.push(temporary);
+        let ele = {}
+        for (let i = 0; i < keys.length; i++) {
+          let temp = [];
+          for (let j = 0; j < data['data'][keys[i]][daysList[i]].length; j++)
+          {
+            let temporary = {};
+            temporary.id = `item-${data['data'][keys[i]][daysList[i]][j]['PriorityDefined']}`;
+            temporary.content = data['data'][keys[i]][daysList[i]][j];
+            temporary.prefix = daysList[i]
+            temporary.type = data['data'][keys[i]][daysList[i]][j]['Type']
+            temp.push(temporary);
+          }
+          ele[daysList[i]] = temp;
         }
 
-      
-        let day = "Today";
-        let ele ={};
-        ele['Today'] = temp;
-        let lists = [];
-        lists.push(day);
-
-        let temp1 = [];
-        for (let index = data['data'].length; index < 2*data['data'].length; index++) {
-          let temporary = {};
-          temporary.id = `item-${index}`;
-          temporary.content = data['data'][index-data['data'].length];
-          temporary.prefix = "Tomorrow"
-          temp1.push(temporary);
-        }
-
-        let day1 = "Tomorrow";
-        lists.push(day1);
-
-        ele['Tomorrow'] = temp1;
      
        // let tempLists = generateLists();
 
@@ -96,7 +93,7 @@ class Tickets extends React.Component {
         console.log(ele);
 
         this.setState({
-          lists1: lists,
+          lists1: daysList,
           elem: ele
 
         });
@@ -106,7 +103,7 @@ class Tickets extends React.Component {
   };
 
   onDragEnd = (result) => {
-    if (!result.destination) {
+    if (!result.destination || this.state.elem[result.source.droppableId][result.source.index]['type'] === "Meeting") {
       return;
     }
     const listCopy = { ...this.state.elem };
