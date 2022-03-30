@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import { red } from '@mui/material/colors';
+import { red, green } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -67,7 +67,7 @@ const ListItem = ({ item, index }) => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small" href={item.content.Link}> Jira</Button>
+                                    <Button size="small" color="error" href={item.content.Link}> Jira</Button>
                                 </CardActions>
                             </Card>
 
@@ -93,7 +93,7 @@ const ListItem = ({ item, index }) => {
                         >
                             <Card sx={{ maxWidth: 345 }}>
                                 <CardHeader
-                                    avatar={<Avatar sx={{ bgcolor: red[500] }}>M</Avatar>}
+                                    avatar={<Avatar sx={{ bgcolor: green[500] }}>M</Avatar>}
                                     titleTypographyProps={{
                                         fontSize: 15,
                                     }}
@@ -114,7 +114,7 @@ const ListItem = ({ item, index }) => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small" href={item.content.Link}> Calendar</Button>
+                                    <Button color="success" size="small" href={item.content.Link}> Calendar</Button>
                                 </CardActions>
                             </Card>
 

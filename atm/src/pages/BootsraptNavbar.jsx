@@ -1,11 +1,6 @@
 import React from 'react'
-import {
-    useParams,
-} from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap'
-import Home from './home'
-import AboutUs from './about';
-import ContactUs from './contact';
+
 class BootstrapNavbar extends React.Component {
     render() {
         return (
@@ -13,13 +8,13 @@ class BootstrapNavbar extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-                            <Navbar.Brand href="/">ATM</Navbar.Brand>
+                            <Navbar.Brand href="/">Time Intuitive</Navbar.Brand>
                             <Navbar.Toggle aria-controls="basic-navbar-nav" />
                             <Navbar.Collapse id="basic-navbar-nav">
                                 <Nav className="mr-auto">
                                     <Nav.Link href="/">Home</Nav.Link>
                                     <Nav.Link href="/statistics">Statistics</Nav.Link>
-                                    <Nav.Link href="/about">About Us</Nav.Link>
+                                    <Nav.Link href="/nextMeetings">Next Meetings</Nav.Link>
                                     <Nav.Link href="/contact">Contact Us</Nav.Link>
                                     {/* <NavDropdown title="More" id="basic-nav-dropdown">
                                         <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

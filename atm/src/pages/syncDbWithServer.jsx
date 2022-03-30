@@ -3,7 +3,26 @@ import React from "react";
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import Container from 'react-bootstrap/Container'
+
+class SimpleBackdrop extends React.Component {
+render(){
+    return (
+      <div>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={this.props.showBackDrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+    );
+  }
+}
+
 
 class MyVerticallyCenteredModal extends React.Component {
   render() {
@@ -40,6 +59,7 @@ class SyncDbWithServer extends React.Component {
     super(props);
     this.state = {
       show: false,
+      showBackDrop: false,
       title: 'Sync Db',
       body: '',
       data: []
@@ -50,11 +70,16 @@ class SyncDbWithServer extends React.Component {
 
     window.location.reload(false);
     this.setState({
-      show: false
+      show: false,
+      showBackDrop: false
     });
   };
 
   callYourAPI = () => {
+    this.setState({
+      showBackDrop:true,
+    })
+
     axios.get(this.url, { crossDomain: true })
       .then((response) => {
         if (response) {
@@ -75,7 +100,8 @@ class SyncDbWithServer extends React.Component {
             show: true,
             title: 'Sync DB on Server',
             body: 'ok',
-            data: ['data'][0]['status']
+            data: ['data'][0]['status'],
+            showBackDrop: false
           });
 
         }
@@ -84,7 +110,8 @@ class SyncDbWithServer extends React.Component {
             show: true,
             title: 'Sync DB on Server NOT DONE',
             body: 'NOK',
-            data: ['data'][0]['status']
+            data: ['data'][0]['status'],
+            showBackDrop: false
           });
 
         }
@@ -107,6 +134,9 @@ class SyncDbWithServer extends React.Component {
           onClick={this.handleClose}
           onHide={this.handleClose} />
 
+        <SimpleBackdrop
+        showBackDrop={this.state.showBackDrop}
+        />
       </div>
     );
   }

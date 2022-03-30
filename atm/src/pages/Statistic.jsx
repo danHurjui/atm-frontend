@@ -26,7 +26,7 @@ class LastPeriodTime extends React.Component {
     is3D: true,
   };
 
-  url = "http://127.0.0.1:8000/getTime/?emailAddress=danhurjui24@gmail.com";
+  url = "http://127.0.0.1:8000/getTime/?emailAddress=danconttest0@gmail.com";
 
   componentDidMount = () => {
     axios.get(this.url, { crossDomain: true })

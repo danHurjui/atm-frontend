@@ -1,26 +1,37 @@
-// import Card from 'react-bootstrap/Card'
-// import CardGroup from 'react-bootstrap/CardGroup'
+
 import React from 'react'
-// import Container from 'react-bootstrap/Container'
 import axios from "axios"
-import Col from "react-bootstrap/Col"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Table from 'react-bootstrap/Table'
-import Card from '@mui/material/Card';
-
-
-import Container from "react-bootstrap/esm/Container";
-import CardHeader from '@mui/material/CardHeader';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
-import { red } from '@mui/material/colors';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { Button, CardActions } from '@mui/material';
-import styled from "styled-components";
 import DraggableElement from "./DraggableElement";
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Alert from 'react-bootstrap/Alert'
 
+
+class ErrorModal extends React.Component {
+  render() {
+    return (
+      <Modal
+        show={this.props.show} onHide={() => this.props.onHide({ msg: 'Cross Icon Clicked!' })}
+        size="lg"
+        aria-labelledby="errorModal"
+        centered
+        variant='danger'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="errorModal">
+          {/* <Alert variant="danger" > */}
+            You are not allowed to move a meeting!
+          {/* </Alert> */}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button onClick={this.props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+}
 
 const removeFromList = (list, index) => {
   const result = Array.from(list);
@@ -39,7 +50,8 @@ class Tickets extends React.Component {
     super(props);
     this.state = {
       lists1: null,
-      elem: null
+      elem: null,
+      show: false,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
 
@@ -103,7 +115,14 @@ class Tickets extends React.Component {
   };
 
   onDragEnd = (result) => {
-    if (!result.destination || this.state.elem[result.source.droppableId][result.source.index]['type'] === "Meeting") {
+    if (!result.destination) {
+      return;
+    }
+    else if( this.state.elem[result.source.droppableId][result.source.index]['type'] === "Meeting")
+    {
+      this.setState({
+        show: true
+      });
       return;
     }
     const listCopy = { ...this.state.elem };
@@ -125,6 +144,11 @@ class Tickets extends React.Component {
       elem: listCopy
     });
   }
+  handleClose = (fromModal) => {
+    this.setState({
+      show: false
+    });
+  }
 
   render() {
     if (!this.state.elem)
@@ -132,7 +156,6 @@ class Tickets extends React.Component {
  
     return (
         <>
-      
             <DragDropContext onDragEnd={this.onDragEnd}>
                 {this.state.lists1.map((listKey) => (
                   <DraggableElement
@@ -143,7 +166,13 @@ class Tickets extends React.Component {
                 ))}
             </DragDropContext>
     
-
+                  <div>
+                    <ErrorModal
+                     show={this.state.show}
+                     onClick={this.handleClose}
+                     onHide={this.handleClose}
+                     />
+                  </div>
          
         </>
       )
