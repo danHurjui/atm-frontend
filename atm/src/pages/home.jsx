@@ -10,7 +10,7 @@ function Home() {
   return (
     <Container>
      
-        <h2>Welcome to ATM</h2>
+        <h2>Welcome to Time Intuitive App</h2>
         <br></br>
         <div>
           <SyncDbWithServer />

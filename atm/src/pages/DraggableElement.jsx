@@ -17,8 +17,14 @@ const getListStyle = (isDraggingOver, isEmpty) => ({
 const DraggableElement = ({ prefix, elements }) => (
 
       <div>
-      <h3> {prefix}</h3>
-      <div style={{ overflow: "scroll" }}>
+      
+        <Container>
+        <br></br>
+        <h3> {prefix}</h3>
+        <br></br>
+        </Container>
+     
+      <Container style={{ overflow: "scroll" }}>
       <Droppable droppableId={`${prefix}`} direction="horizontal">
         {(provided, snapshot) => (
           <div 
@@ -33,7 +39,7 @@ const DraggableElement = ({ prefix, elements }) => (
           </div>
         )}
       </Droppable>
-      </div>
+      </Container>
       </div>
   
 );
