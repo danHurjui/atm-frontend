@@ -9,8 +9,8 @@ import Container from 'react-bootstrap/esm/Container';
 function Home() {
   return (
     <Container>
-     
-        <h2>Welcome to Time Intuitive App</h2>
+
+        <h2>Welcome to Time Intuition App</h2>
         <br></br>
         <div>
           <SyncDbWithServer />
@@ -21,12 +21,12 @@ function Home() {
         </div>
         <br></br>
         <div>
-       
+
             {/* <NextMeetings /> */}
-        
+
         </div>
 
-    
+
     </Container>
   );
 };

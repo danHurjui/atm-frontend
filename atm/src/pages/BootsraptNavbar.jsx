@@ -8,7 +8,7 @@ class BootstrapNavbar extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-                            <Navbar.Brand href="/">Time Intuitive</Navbar.Brand>
+                            <Navbar.Brand href="/">Time Intuition</Navbar.Brand>
                             <Navbar.Toggle aria-controls="basic-navbar-nav" />
                             <Navbar.Collapse id="basic-navbar-nav">
                                 <Nav className="mr-auto">

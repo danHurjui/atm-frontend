@@ -8,6 +8,24 @@ import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 
 
+class AlertWarning extends React.Component {
+  render() {
+    return (
+      <Alert
+        show={this.props.show}
+        size="lg"
+        variant='warning'
+        dismissible
+        onClose={this.props.onClose}
+      >
+        <Alert.Heading >
+            You overbooked for {this.props.overBookDay}
+        </Alert.Heading>
+      </Alert>
+    );
+  }
+}
+
 class ErrorModal extends React.Component {
   render() {
     return (
@@ -45,6 +63,16 @@ const addToList = (list, index, element) => {
   return result;
 };
 
+const calculateHours = (list) =>
+{
+   let res = 0;
+   for (let i = 0; i<list.length; i++)
+   {
+      res = res + list[i]['content']['Estimated']
+   }
+   return res;
+}
+
 class Tickets extends React.Component {
   constructor(props) {
     super(props);
@@ -52,6 +80,8 @@ class Tickets extends React.Component {
       lists1: null,
       elem: null,
       show: false,
+      over : false,
+      overBookDay : ''
     };
     this.onDragEnd = this.onDragEnd.bind(this);
 
@@ -77,11 +107,11 @@ class Tickets extends React.Component {
         for (let i = 0; i < keys.length; i++)
         {
             keyDay = Object.keys(data['data'][keys[i]]);
-            
+
             daysList.push(keyDay[0])
-            
+
         }
-        
+
         console.log(data['data'])
         let ele = {}
         for (let i = 0; i < keys.length; i++) {
@@ -98,7 +128,7 @@ class Tickets extends React.Component {
           ele[daysList[i]] = temp;
         }
 
-     
+
        // let tempLists = generateLists();
 
        // console.log(tempLists);
@@ -140,22 +170,39 @@ class Tickets extends React.Component {
       removedElement
     );
 
+    let hours = calculateHours(listCopy[result.destination.droppableId])
+    let overbook = false;
+    if (hours > 8 && (result.destination.droppableId != 'Backlog'))
+    {
+      overbook = true;
+    }
+
     this.setState({
-      elem: listCopy
+      elem: listCopy,
+      over: overbook,
+      overBookDay: result.destination.droppableId,
     });
   }
-  handleClose = (fromModal) => {
+  handleClose = () => {
     this.setState({
-      show: false
+      show: false,
+      over:false
     });
   }
 
   render() {
     if (!this.state.elem)
       return null;
- 
+
     return (
         <>
+         <div class="sticky">
+                    <AlertWarning
+                    show={this.state.over}
+                    overBookDay={this.state.overBookDay}
+                    onClose={this.handleClose}
+                    />
+          </div>
             <DragDropContext onDragEnd={this.onDragEnd}>
                 {this.state.lists1.map((listKey) => (
                   <DraggableElement
@@ -165,7 +212,7 @@ class Tickets extends React.Component {
                   />
                 ))}
             </DragDropContext>
-    
+
                   <div>
                     <ErrorModal
                      show={this.state.show}
@@ -173,10 +220,11 @@ class Tickets extends React.Component {
                      onHide={this.handleClose}
                      />
                   </div>
-         
+
+
         </>
       )
-    
+
   }
 }
 
