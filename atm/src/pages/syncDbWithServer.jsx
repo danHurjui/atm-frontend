@@ -40,11 +40,14 @@ class MyVerticallyCenteredModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <div>
-            {this.props.body}
+            <p>Data is synced every 15 minutes. </p>
+            <p>If you would like to sync you data right now, please confirm. Depending on you data, this may take up to a few minutes.</p>
+
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.onHide}>Close</Button>
+          <Button variant="primary" onClick={this.props.onHide}>Close</Button>
+          <Button variant="secundary" onClick={this.props.syncDb}> Sync Now</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -68,9 +71,16 @@ class SyncDbWithServer extends React.Component {
 
   handleClose = (fromModal) => {
 
-    window.location.reload(false);
+
     this.setState({
       show: false,
+      showBackDrop: false
+    });
+  };
+
+  handleShow = () => {
+    this.setState({
+      show: true,
       showBackDrop: false
     });
   };
@@ -97,7 +107,7 @@ class SyncDbWithServer extends React.Component {
         console.log(this.state.show)
         if (data['data'][0]['status'] === 'ok') {
           this.setState({
-            show: true,
+            show: false,
             title: 'Sync DB on Server',
             body: 'ok',
             data: ['data'][0]['status'],
@@ -113,8 +123,8 @@ class SyncDbWithServer extends React.Component {
             data: ['data'][0]['status'],
             showBackDrop: false
           });
-
         }
+        window.location.reload(false);
       })
       .catch((error) => console.error("FETCH ERROR: ", error))
   };
@@ -122,7 +132,7 @@ class SyncDbWithServer extends React.Component {
   render() {
     return (
       <div>
-        <Button variant="primary" onClick={this.callYourAPI} >
+        <Button variant="primary" onClick={this.handleShow} >
           Sync DB
         </Button>
 
@@ -132,7 +142,9 @@ class SyncDbWithServer extends React.Component {
           body={this.state.body}
           data={this.state.data}
           onClick={this.handleClose}
-          onHide={this.handleClose} />
+          onHide={this.handleClose}
+          syncDb ={this.callYourAPI}
+          />
 
         <SimpleBackdrop
         showBackDrop={this.state.showBackDrop}
