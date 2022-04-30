@@ -86,7 +86,7 @@ class Tickets extends React.Component {
     this.onDragEnd = this.onDragEnd.bind(this);
 
   }
-  url = "http://127.0.0.1:8000/getTickets/?emailAddress=danhurjui24@gmail.com";
+  url = process.env.REACT_APP_API_URL + "/getTickets/?emailAddress=danhurjui24@gmail.com";
 
   componentDidMount = () => {
     axios.get(this.url, { crossDomain: true })

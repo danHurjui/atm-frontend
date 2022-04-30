@@ -5,6 +5,8 @@ import Container from 'react-bootstrap/Container'
 import axios from "axios"
 import Col from "react-bootstrap/Col"
 
+
+
 class NextMeetings extends React.Component {
   constructor(props) {
     super(props);
@@ -13,7 +15,10 @@ class NextMeetings extends React.Component {
     };
 
   }
-  url = "http://127.0.0.1:8000/getMeetings/?emailAddress=danconttest0@gmail.com";
+
+
+
+  url = process.env.REACT_APP_API_URL + "/getMeetings/?emailAddress=danconttest0@gmail.com";
 
   componentDidMount = () => {
     axios.get(this.url, { crossDomain: true })
@@ -25,17 +30,19 @@ class NextMeetings extends React.Component {
           console.log("FAILURE");
           throw new Error("NETWORK RESPONSE ERROR");
         }
+
       })
       .then(data => {
-       
+        console.log("OK");
+        console.log(process.env.REACT_APP_API_URL);
         console.log(data['data'])
         this.setState({
           dataProcess: data['data'],
-     
+
         });
 
       })
-      .catch((error) => console.error("FETCH ERROR: ", error))
+      .catch((error) => console.error("FETCH ERROR: ", error));
   };
 
 
@@ -64,7 +71,7 @@ class NextMeetings extends React.Component {
                     <Card.Link href={dataP.Link}> Link to Meeting</Card.Link>
                   </Card.Body>
                   </Card>
-                  </Col>      
+                  </Col>
               ))}
           </CardGroup>
         </Container>

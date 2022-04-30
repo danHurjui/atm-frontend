@@ -56,7 +56,7 @@ class MyVerticallyCenteredModal extends React.Component {
 
 class SyncDbWithServer extends React.Component {
 
-  url = "http://127.0.0.1:8000/syncdb/?emailAddress=danhurjui24@gmail.com";
+  url = process.env.REACT_APP_API_URL +  "/syncdb/?emailAddress=danhurjui24@gmail.com";
 
   constructor(props) {
     super(props);
